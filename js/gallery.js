@@ -1,20 +1,48 @@
 function initialize() {
    $("#container").html("");
-   unpacked = true;
    var lines = $('#links').val().split('\n');
-   var oembed = "http://backend.deviantart.com/oembed?url=";
+   //var oembed = "http://backend.deviantart.com/oembed?url=";
    for(var i = 0;i < lines.length;i++){
-      $.getJSON( oembed + lines[i] + "&format=jsonp&callback=?", linkmediator(lines[i]));
+      //$.getJSON( oembed + lines[i] + "&format=jsonp&callback=?", linkmediator(lines[i]));
+      for (key in linkmap) {
+         var re = RegExp(key)
+         if (re.test(lines[i])) {
+            linkmap[key](lines[i]);
+         }
+      }
    }
 }
 
+const linkmap = {
+   ".*deviantart.com.*": 
+      function(str) {
+         var oembed = "http://backend.deviantart.com/oembed?url=";
+         $.getJSON( oembed + str + "&format=jsonp&callback=?", linkmediator(str));
+      },
+   ".*":
+      function(str) {
+         var img = new Image();
+         img.src = str;
+         $(img).one('load',function(){
+            var data = {}
+            data.thumbnail_width = 300;
+            data.thumbnail_height = img.height * (300 / img.width);
+            data.thumbnail_url = str;
+            data.url = str;
+            data.width = img.width;
+            data.height = img.height;
+            data.title = img;
+            add(data, str);
+         });
+      }
+}
 
 // define your grid at different breakpoints, mobile first (smallest to largest)
 
 const sizes = [
-   { columns: 2, gutter: 10 },                   // assumed to be mobile, because of the missing mq property
-   { mq: '768px', columns: 3, gutter: 25 },
-   { mq: '1024px', columns: 4, gutter: 50 }
+{ columns: 2, gutter: 10 },                   // assumed to be mobile, because of the missing mq property
+{ mq: '768px', columns: 3, gutter: 25 },
+{ mq: '1024px', columns: 4, gutter: 50 }
 ];
 
 // create an instance
@@ -30,15 +58,12 @@ $(document).ready(function() {
       sizes:     sizes
    });
 
-   // bind callbacks
 
    instance
       .on('pack',   () => console.log('ALL grid items packed.'))
       .on('update', () => console.log('NEW grid items packed.'))
       .on('resize', size => console.log('The grid has be re-packed to accommodate a new BREAKPOINT.'))
 
-      // start it up, when the DOM is ready
-      // note that if images are in the grid, you may need to wait for document.readyState === 'complete'
 
       document.addEventListener('DOMContentLoaded', event => {
          instance
@@ -105,12 +130,6 @@ function add(data, str) {
 
    });
 
-   if (unpacked) {
-      instance.pack();
-      unpacked = false;
-   }
-   else {
-      instance.update();
-   }
+   instance.pack();
 }
 
