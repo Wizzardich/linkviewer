@@ -44,7 +44,6 @@ const linkmap = {
       }
 }
 
-
 /* ========== Bricks INIT ========== */
 
 const sizes = [ 
@@ -140,6 +139,5 @@ function add(data, str) {
    });
 
    instance.pack();
-
 }
 
