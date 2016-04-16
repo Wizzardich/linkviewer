@@ -1,4 +1,5 @@
 function initialize() {
+   if (inProgress) return;
    $("#container").empty();
    $("#container").removeData();
 
@@ -10,7 +11,9 @@ function initialize() {
          for (key in linkmap) {
             var re = RegExp(key);
             if (re.test(line)) {
+               inProgress++;
                linkmap[key](line);
+               break;
             }
          }
       }
@@ -54,6 +57,7 @@ const sizes = [
 
 var instance;
 var unpacked = true;
+var inProgress = 0;
 
 $(document).ready(function() {
 
@@ -100,6 +104,7 @@ function add(data, str) {
    var div = $("<div></div>").addClass('cell').append(linkspan).append(imgsrc);
 
    $("#container").append(div);
+   inProgress--;
 
    linkspan.data("index", $("#container .cell").index(div));
 
@@ -139,5 +144,6 @@ function add(data, str) {
    });
 
    instance.pack();
+
 }
 
