@@ -17,7 +17,7 @@ function initialize() {
             }
          }
       }
-   }   
+   }
 }
 
 var re_weburl = new RegExp("(https?:\/\/[^\\s]+)", "i");
@@ -143,7 +143,9 @@ function add(data, str) {
 
    });
 
-   instance.pack();
+   $( imgsrc ).imagesLoaded().always( function () {
+      instance.pack();
+   })
 
 }
 
