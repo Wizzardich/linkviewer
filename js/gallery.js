@@ -88,7 +88,6 @@ $(document).ready(function() {
     $("#saver").click(function() {
         var data = {};
         data.links = $('#links').val().split('\n');
-        console.log(JSON.stringify(data));
         $.ajax({
             url: "/link-viewer/rest/store",
             type: "POST",
