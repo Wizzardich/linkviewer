@@ -6,7 +6,6 @@ import play.api.libs.json.Json
 import play.api.mvc._
 
 class LinkStorage extends Controller {
-  import model.JsonFormats._
 
   def store = Action.async (parse.json) { data =>
     DataFacade.writeContainer(
@@ -18,7 +17,7 @@ class LinkStorage extends Controller {
 
   def get(uuid: String) = Action.async {
     DataFacade.readContainer(uuid).map({
-      case Some(t) => Ok(Json.toJson(t))
+      case Some(t) => Ok(Json.toJson(t.links))
       case None => Ok(Json.obj())
     })
   }

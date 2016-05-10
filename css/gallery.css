@@ -2,6 +2,12 @@
    width: 80%;
    margin: auto;
 }
+
+#permalink {
+   display: none;
+   width: 100%;
+}
+
 #link-container {
    width: 80%;
    margin: auto;

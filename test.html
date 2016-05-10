@@ -3,7 +3,9 @@
    <head>
       <title> freewall demo getting started</title>
       <script src="js/jquery-1.10.2.min.js"></script>
-      <script src="js/freewall.js"></script>
+       <script src="js/freewall.js"></script>
+       <script src="js/notify.js"></script>
+       <script src="js/imagesloaded.pkgd.min.js"></script>
       <!-- Core CSS file -->
       <link rel="stylesheet" href="css/photoswipe.css"> 
 
@@ -31,8 +33,9 @@
    <body>
       <div id="link-container">
          <textarea autofocus spellcheck="false" id="links"></textarea>
-         <button type="button" class="btn btn-default" id="starter" onclick="initialize()">>></button>
-         <button type="button" class="btn btn-default" id="saver" onclick="save()">Share</button>
+         <button type="button" class="btn btn-default" id="starter">>></button>
+         <button type="button" class="btn btn-default" id="saver">Share</button>
+         <label id="permalink"></label>
       </div>
       <div id="container">
       </div>
