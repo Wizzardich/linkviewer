@@ -3,9 +3,8 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+POST    /store                          controllers.LinkStorage.store
+GET     /links/:uuid                    controllers.LinkStorage.get(uuid: String)
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
     
