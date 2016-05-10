@@ -1,3 +1,5 @@
+/* ========== Interface Methods ========== */
+
 function initialize() {
    if (inProgress) return;
    $("#container").empty();
@@ -18,6 +20,30 @@ function initialize() {
          }
       }
    }
+}
+
+function save() {
+    var data = {};
+    data.links = $('#links').val().split('\n');
+    console.log(JSON.stringify(data));
+    $.ajax({
+        url: "/link-viewer/rest/store",
+        type: "POST",
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json"
+    }).done(function(dat) {
+        // $.notify("Applied successfully", {
+        //     position: "top center",
+        //     className: "success"
+        // })
+        console.log(dat);
+    }).fail(function() {
+        // $.notify("Failed to apply changes", {
+        //     position: "top center",
+        //     className: "error"
+        // })
+    });
 }
 
 var re_weburl = new RegExp("(https?:\/\/[^\\s]+)", "i");

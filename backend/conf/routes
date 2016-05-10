@@ -5,6 +5,3 @@
 # Home page
 POST    /store                          controllers.LinkStorage.store
 GET     /links/:uuid                    controllers.LinkStorage.get(uuid: String)
-
-
-    

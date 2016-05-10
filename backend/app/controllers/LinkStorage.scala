@@ -1,19 +1,26 @@
 package controllers
 
-import play.api._
+import model.{DataFacade, LinkContainer}
+import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json.Json
 import play.api.mvc._
 
-import scala.concurrent.Future
-
 class LinkStorage extends Controller {
+  import model.JsonFormats._
 
-  def store = Action.async {
-    Future(Ok(Json.obj()))
+  def store = Action.async (parse.json) { data =>
+    DataFacade.writeContainer(
+      LinkContainer.createLinkContainer(
+        (data.body \ "links").as[Seq[String]]
+      )
+    ).map(r => Ok(Json.toJson(r._id)))
   }
 
   def get(uuid: String) = Action.async {
-    Future(Ok(Json.obj()))
+    DataFacade.readContainer(uuid).map({
+      case Some(t) => Ok(Json.toJson(t))
+      case None => Ok(Json.obj())
+    })
   }
 
 }
