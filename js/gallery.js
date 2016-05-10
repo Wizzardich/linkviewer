@@ -143,6 +143,7 @@ function add(data, str) {
 
    });
 
+   instance.pack();
    $( imgsrc ).imagesLoaded().always( function () {
       instance.pack();
    })
