@@ -38,6 +38,7 @@ $(document).ready(function() {
     var unpacked = true;
     var inProgress = 0;
     var container = $("#container");
+    var starter = $("#starter");
 
     /** ================== BRICKS INITIALIZATION ================== **/
 
@@ -59,20 +60,6 @@ $(document).ready(function() {
         .resize()     // bind resize handler
         .pack()       // pack initial items
     })
-
-    var id = getUrlParameter('id');
-    if (id) {
-        $.get("/link-viewer/rest/links/" + id, function(data) {
-                container.val(data.join("\n"));
-                initialize();
-            })
-        .fail(function () {
-            $.notify("Failed to retrieve links", {
-                position: "top center",
-                className: "error"
-            })
-        });
-    }
 
     /** ================== LISTENERS ================== **/
 
@@ -121,6 +108,22 @@ $(document).ready(function() {
             })
         });
     });
+
+    /** ================== PARSE PARAMETERS ================== **/
+
+    var id = getUrlParameter('id');
+    if (id) {
+        $.get("/link-viewer/rest/links/" + id, function(data) {
+                container.val(data.join("\n"));
+                starter.trigger()
+            })
+            .fail(function () {
+                $.notify("Failed to retrieve links", {
+                    position: "top center",
+                    className: "error"
+                })
+            });
+    }
 
     /** ================== UTILITY FUNCTIONS ================== **/
 
