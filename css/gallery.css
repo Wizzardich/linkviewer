@@ -3,7 +3,8 @@
    margin: auto;
 }
 
-#permalink {
+#permalink-container {
+   align-items: center;
    display: none;
    width: 100%;
 }

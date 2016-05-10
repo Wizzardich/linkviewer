@@ -39,6 +39,7 @@ $(document).ready(function() {
     var inProgress = 0;
     var container = $("#container");
     var starter = $("#starter");
+    var link_container = $('#links');
 
     /** ================== BRICKS INITIALIZATION ================== **/
 
@@ -68,7 +69,7 @@ $(document).ready(function() {
         container.empty();
         container.removeData();
 
-        var lines = $('#links').val().split('\n');
+        var lines = link_container.val().split('\n');
         for(var i = 0; i < lines.length; i++){
             var line = re_weburl.exec(lines[i]);
             if (line) {
@@ -87,7 +88,7 @@ $(document).ready(function() {
 
     $("#saver").click(function() {
         var data = {};
-        data.links = $('#links').val().split('\n');
+        data.links = link_container.val().split('\n');
         $.ajax({
             url: "/link-viewer/rest/store",
             type: "POST",
@@ -95,11 +96,11 @@ $(document).ready(function() {
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         }).done(function(dat) {
-            $("#permalink").val(
-                window.location.protocol + "//" +
+            var text = window.location.protocol + "//" +
                 window.location.hostname +
-                window.location.pathname + "?id=" + dat
-            ).slideDown();
+                window.location.pathname + "?id=" + dat;
+            $("#permalink").text(text).attr("href", text);
+            $("#permalink-container").slideDown();
         }).fail(function() {
             $.notify("Failed to apply changes", {
                 position: "top center",
@@ -113,8 +114,8 @@ $(document).ready(function() {
     var id = getUrlParameter('id');
     if (id) {
         $.get("/link-viewer/rest/links/" + id, function(data) {
-                container.val(data.join("\n"));
-                starter.trigger()
+                link_container.val(data.join("\n"));
+                starter.trigger("click");
             })
             .fail(function () {
                 $.notify("Failed to retrieve links", {
