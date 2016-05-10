@@ -1,17 +1,27 @@
 function initialize() {
-   $("#container").html("");
+   if (inProgress) return;
+   $("#container").empty();
+   $("#container").removeData();
+
    var lines = $('#links').val().split('\n');
-   //var oembed = "http://backend.deviantart.com/oembed?url=";
-   for(var i = 0;i < lines.length;i++){
-      //$.getJSON( oembed + lines[i] + "&format=jsonp&callback=?", linkmediator(lines[i]));
-      for (key in linkmap) {
-         var re = RegExp(key)
-         if (re.test(lines[i])) {
-            linkmap[key](lines[i]);
+   for(var i = 0; i < lines.length; i++){
+      var line = re_weburl.exec(lines[i]);
+      if (line) {
+         line = line[0];
+         for (key in linkmap) {
+            var re = RegExp(key);
+            if (re.test(line)) {
+               inProgress++;
+               linkmap[key](line);
+               break;
+            }
          }
       }
    }
 }
+
+var re_weburl = new RegExp("(https?:\/\/[^\\s]+)", "i");
+
 
 const linkmap = {
    ".*deviantart.com.*": 
@@ -31,24 +41,23 @@ const linkmap = {
             data.url = str;
             data.width = img.width;
             data.height = img.height;
-            data.title = img;
+            data.title = str;
             add(data, str);
          });
       }
 }
 
-// define your grid at different breakpoints, mobile first (smallest to largest)
+/* ========== Bricks INIT ========== */
 
-const sizes = [
-{ columns: 2, gutter: 10 },                   // assumed to be mobile, because of the missing mq property
-{ mq: '768px', columns: 3, gutter: 25 },
-{ mq: '1024px', columns: 4, gutter: 50 }
+const sizes = [ 
+{ columns: 2, gutter: 10 },
+{ mq: '768px', columns: 3, gutter: 10 },
+{ mq: '1600px', columns: 4, gutter: 15 }
 ];
 
-// create an instance
-
 var instance;
-var flag = false;
+var unpacked = true;
+var inProgress = 0;
 
 $(document).ready(function() {
 
@@ -56,7 +65,7 @@ $(document).ready(function() {
       container: '#container',
       packed:    'data-packed',        // if not prefixed with 'data-', it will be added
       sizes:     sizes
-   });
+   }); 
 
 
    instance
@@ -73,6 +82,9 @@ $(document).ready(function() {
 
 });
 
+/* ========== Bricks INIT COMPLETE ========== */
+
+
 function linkmediator(link) {
    return function(data) {
       add(data, link)
@@ -81,7 +93,7 @@ function linkmediator(link) {
 
 function add(data, str) {
 
-   /* ========== DOM manipulations ==========*/
+   /* ========== DOM manipulations ========== */
    var linkspan = $("<span>"+str+"</span>").addClass('link-info')
       .data(data);
    var imgsrc = $('<img>').addClass('freewall_thumbnail')
@@ -92,10 +104,11 @@ function add(data, str) {
    var div = $("<div></div>").addClass('cell').append(linkspan).append(imgsrc);
 
    $("#container").append(div);
+   inProgress--;
 
    linkspan.data("index", $("#container .cell").index(div));
 
-   /* ========== PhotoSwipe Init Listener==========*/
+   /* ========== PhotoSwipe Init Listener ========== */
    $(".freewall_thumbnail").off("click").on("click", function(){
       var pswpElement = document.querySelectorAll('.pswp')[0];   
 
@@ -130,6 +143,9 @@ function add(data, str) {
 
    });
 
-   instance.pack();
+   $( imgsrc ).imagesLoaded().always( function () {
+      instance.pack();
+   })
+
 }
 
