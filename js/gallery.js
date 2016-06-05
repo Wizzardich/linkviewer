@@ -7,7 +7,7 @@ $(document).ready(function() {
     const linkmap = {
         ".*deviantart.com.*":
             function(str) {
-                var oembed = "http://backend.deviantart.com/oembed?url=";
+                var oembed = "https://backend.deviantart.com/oembed?url=";
                 $.getJSON( oembed + str + "&format=jsonp&callback=?", linkmediator(str));
             },
         ".*":
