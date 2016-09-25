@@ -178,7 +178,7 @@ $(document).ready(function() {
                     w: $(this).data("width"),
                     h: $(this).data("height"),
                     author: '<a href='+$(this).data("author_url")+'>'+$(this).data("author_name")+'</a>',
-                    title: '<a href='+$(this).text()+'>'+$(this).data("title")+'</a>'
+                    title: '<a href='+$(this).text()+' class="caption" >'+$(this).data("title")+'</a>'
                 };
 
 
@@ -198,6 +198,12 @@ $(document).ready(function() {
             var gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
             gallery.init();
 
+            $( pswpElement ).keydown( function(evt) {
+                if (evt.keyCode == 32) {
+                    var url = $(this).find(".caption").attr('href');
+                    window.open(url, '_blank');
+                }
+            });
         });
 
 	instance.pack();
