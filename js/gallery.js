@@ -201,7 +201,9 @@ $(document).ready(function() {
             $( pswpElement ).keydown( function(evt) {
                 if (evt.keyCode == 32) {
                     var url = $(this).find(".caption").attr('href');
-                    window.open(url, '_blank');
+                    var newtab = window.open(url, '_blank');
+                    newtab.blur();
+                    window.focus();
                 }
             });
         });
