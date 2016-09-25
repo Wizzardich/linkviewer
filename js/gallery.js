@@ -34,6 +34,17 @@ $(document).ready(function() {
         { mq: '1600px', columns: 4, gutter: 15 }
     ];
 
+
+    function openNewBackgroundTab(url){
+        var a = document.createElement("a");
+        a.href = url;
+        var evt = new MouseEvent("click", {
+            ctrlKey: true,
+            view: window
+        });
+        a.dispatchEvent(evt);
+    }
+
     var instance;
     var unpacked = true;
     var inProgress = 0;
@@ -200,10 +211,8 @@ $(document).ready(function() {
 
             $( pswpElement ).keydown( function(evt) {
                 if (evt.keyCode == 32) {
-                    var url = $(this).find(".caption");
-                    var e = $.Event("click");
-                    e.ctrlKey = true;
-                    $( url ).trigger(e);
+                    var url = $(this).find(".caption").attr('href');
+                    openNewBackgroundTab(url);
                 }
             });
         });
