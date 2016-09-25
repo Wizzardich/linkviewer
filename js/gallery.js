@@ -211,7 +211,7 @@ $(document).ready(function() {
 
             $( pswpElement ).keydown( function(evt) {
                 if (evt.keyCode == 32) {
-                    var url = $(this).find(".caption").get(1).attr('href');
+                    var url = $(this).find(".caption:eq(1)").attr('href');
                     openNewBackgroundTab(url);
                 }
             });
