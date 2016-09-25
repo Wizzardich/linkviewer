@@ -34,17 +34,6 @@ $(document).ready(function() {
         { mq: '1600px', columns: 4, gutter: 15 }
     ];
 
-
-    function openNewBackgroundTab(url){
-        var a = document.createElement("a");
-        a.href = url;
-        var evt = document.createEvent("MouseEvents");
-        //the tenth parameter of initMouseEvent sets ctrl key
-        evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0,
-            true, false, false, false, 0, null);
-        a.dispatchEvent(evt);
-    }
-
     var instance;
     var unpacked = true;
     var inProgress = 0;
@@ -211,8 +200,10 @@ $(document).ready(function() {
 
             $( pswpElement ).keydown( function(evt) {
                 if (evt.keyCode == 32) {
-                    var url = $(this).find(".caption").attr('href');
-                    openNewBackgroundTab(url);
+                    var url = $(this).find(".caption");
+                    var e = $.Event("click");
+                    e.ctrlKey = true;
+                    $( url ).trigger(e);
                 }
             });
         });
