@@ -162,7 +162,7 @@ $(document).ready(function() {
     function add(data, str) {
 
         /* ========== DOM manipulations ========== */
-        if (!("url" in data) && ("fullsize_url" in data)) data.url = data.fullsize_url;
+        if ("fullsize_url" in data) data.url = data.fullsize_url;
         var linkspan = $("<span>"+str+"</span>").addClass('link-info')
             .data(data);
         var imgsrc = $('<img>').addClass('freewall_thumbnail')
