@@ -4,43 +4,33 @@ import com.typesafe.config.ConfigFactory
 import play.api.libs.json._
 import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection._
-import reactivemongo.api.{MongoDriver, ReadPreference}
+import reactivemongo.api.{Cursor, MongoDriver, ReadPreference}
 import reactivemongo.play.json.collection.JSONCollection
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 trait BackendSettings {
   val config = ConfigFactory.load()
   val DBName = config.getString("mongo.database.name")
+  val router = config.getString("mongo.router")
 }
 
 object DataHandler extends BackendSettings{
-  /*
-This is costy to create. REUSE.
- */
   private val driver = new MongoDriver
-  /*
-   * We'll have to connect to a replica set here. To do that we'll need to get all of mongo addresses written in etcd2
-   * key-value storage
-   * This is costy to create. REUSE.
-   */
-  private val connection = driver.connection(
-    try {
-      List[String](sys.env("ROUTER"))
-    } catch {
-      case _ => List[String]("localhost");
-    }
-  )
 
-  val db = connection(DBName)
+  private val connection = driver.connection(List(router))
+
+  val db = Await.result(connection.database(DBName), 5 seconds)
 
   def links = db.collection[JSONCollection]("links")
 
   def query[T](collection: JSONCollection)(queryOpt: (String, Json.JsValueWrapper)*)(number: Int)(implicit fjs: Reads[T]):Future[Seq[T]] = {
     val q = Json.obj("$or" -> (for(obj <- queryOpt) yield Json.obj(obj)))
 
-    collection.find(q).cursor[T](ReadPreference.primaryPreferred).collect[List](number)
+    collection.find(q).cursor[T](ReadPreference.primaryPreferred).collect[List](number, Cursor.FailOnError[List[T]]())
   }
 
   def queryOne[T](collection: JSONCollection)(queryOpt: (String, Json.JsValueWrapper)*)(implicit fjs: Reads[T]):Future[Option[T]] = {
@@ -50,7 +40,7 @@ This is costy to create. REUSE.
   }
 
   def queryAll[T](collection: JSONCollection)(implicit fjs: Reads[T]):Future[Seq[T]] = {
-    collection.find(Json.obj()).cursor[T](ReadPreference.primaryPreferred).collect[List]()
+    collection.find(Json.obj()).cursor[T](ReadPreference.primaryPreferred).collect[List](-1, Cursor.FailOnError[List[T]]())
   }
 
   def insert[T](collection: JSONCollection)(document: T)(implicit fjw: OWrites[T]) =

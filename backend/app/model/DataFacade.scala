@@ -31,11 +31,13 @@ object JsonFormats {
     def reads(json: JsValue): JsResult[DateTime] = json match {
       case JsObject(j) => j.get("$date") match {
         case Some(JsNumber(d)) => JsSuccess(new DateTime(d.toLong))
+        case _ => throw new IllegalArgumentException("Should not be here, wrong Json")
       }
+      case _ => throw new IllegalArgumentException("Should not be here, wrong Json")
     }
   }
 
-  implicit val containerFormat = Json.format[LinkContainer]
+  implicit val containerFormat: OFormat[LinkContainer] = Json.format[LinkContainer]
 }
 
 object DataFacade {

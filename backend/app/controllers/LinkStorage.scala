@@ -1,11 +1,14 @@
 package controllers
 
+import javax.inject.Inject
+
 import model.{DataFacade, LinkContainer}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json.Json
 import play.api.mvc._
 
-class LinkStorage extends Controller {
+class LinkStorage @Inject () extends InjectedController {
 
   def store = Action.async (parse.json) { data =>
     DataFacade.writeContainer(
