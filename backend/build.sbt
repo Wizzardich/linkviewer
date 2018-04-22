@@ -1,6 +1,6 @@
 name := "linkviewer_backend"
 
-version := "1.0"
+version in ThisBuild := "1.0.3"
 
 lazy val `linkviewer_backend` = (project in file(".")).enablePlugins(PlayScala)
 
